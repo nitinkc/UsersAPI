@@ -1,1 +1,4 @@
 # UsersAPI
+
+## Encrypt user password
+
