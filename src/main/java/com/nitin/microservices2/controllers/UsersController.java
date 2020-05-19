@@ -32,19 +32,9 @@ public class UsersController {
 	@Autowired
 	private UsersService userService;
 
-	@GetMapping("/status/check")
-	public String healthCkeck() {
-		String msg = "Health is perfect\n";
-		String port = "Port number is : " + env.getProperty("local.server.port");
-		
-		String configServerCheck = env.getProperty("token.expiration.time");
-		return msg+port + "\n config Server Check :: token.expiration.time=" + configServerCheck;
-	}
-
-
 	@PostMapping(value = "/add",
 			consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE },
-				 produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+				 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public ResponseEntity<CreatedUserResponseModel> createUser(@Valid @RequestBody UserRegistrationModel userDetails) {
 		ModelMapper modelMapper = new ModelMapper(); 
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
