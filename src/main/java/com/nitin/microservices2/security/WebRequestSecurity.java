@@ -52,7 +52,7 @@ public class WebRequestSecurity extends WebSecurityConfigurerAdapter{
 	}
 	private UserAuthenticationFilter getAuthenticationFilter()  throws Exception{
 		UserAuthenticationFilter authenticationFilter = new UserAuthenticationFilter(authenticationManager());
-		//authenticationFilter.setAuthenticationManager(authenticationManager()); 
+		authenticationFilter.setAuthenticationManager(authenticationManager()); 
 		authenticationFilter.setFilterProcessesUrl(env.getProperty("login.url.path"));
 		return authenticationFilter;
 	}

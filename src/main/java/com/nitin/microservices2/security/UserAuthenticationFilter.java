@@ -57,15 +57,15 @@ public class UserAuthenticationFilter  extends UsernamePasswordAuthenticationFil
 	protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication auth)
 	throws IOException, ServletException{
 		String userName = ((User) auth.getPrincipal()).getUsername();
-//		UserDTO userDetails = usersService.getUserDetailsByEmail(userName);
-//
-//		String token = Jwts.builder()
-//				.setSubject(userDetails.getUserId())
-//				.setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(env.getProperty("token.expiration.time"))))
-//				.signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
-//				.compact();
-		String token = "Farji Token" + System.currentTimeMillis();
+		UserDTO userDetails = usersService.getUserDetailsByEmail(userName);
+
+		String token = Jwts.builder()
+				.setSubject(userDetails.getUserId())
+				.setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(env.getProperty("token.expiration.time"))))
+				.signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
+				.compact();
+		//String token = "Farji Token" + System.currentTimeMillis();
 		res.addHeader("token", token);
-		//res.addHeader("userId", userDetails.getUserId());
+		res.addHeader("userId", userDetails.getUserId());
 	}
 }
