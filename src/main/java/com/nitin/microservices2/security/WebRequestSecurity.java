@@ -20,7 +20,7 @@ import com.nitin.microservices2.services.UsersService;
 @Configuration
 @EnableWebSecurity
 public class WebRequestSecurity extends WebSecurityConfigurerAdapter{
-	//@Value("${security.enable-csrf}")
+	@Value("${security.enable-csrf}")
     private boolean csrfEnabled;
 	@Autowired
 	private Environment env;
@@ -33,14 +33,13 @@ public class WebRequestSecurity extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// Temporarily disabling the Spring Security
-		// super.configure(http);
+		//super.configure(http);
 		if (!csrfEnabled) {
 			http.csrf().disable();
 		}
 		
 		http.authorizeRequests()
-			.antMatchers(env
-					.getProperty("ant.matchers.path"))
+			.antMatchers(env.getProperty("ant.matchers.path"))
 			.permitAll()
 			.and()
 			.addFilter(getAuthenticationFilter());
@@ -50,6 +49,7 @@ public class WebRequestSecurity extends WebSecurityConfigurerAdapter{
 
 		http.headers().frameOptions().disable();
 	}
+	
 	private UserAuthenticationFilter getAuthenticationFilter()  throws Exception{
 		UserAuthenticationFilter authenticationFilter = new UserAuthenticationFilter(authenticationManager());
 		authenticationFilter.setAuthenticationManager(authenticationManager()); 

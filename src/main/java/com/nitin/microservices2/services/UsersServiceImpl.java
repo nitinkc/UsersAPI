@@ -53,7 +53,7 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public UserDTO getUserDetailsByEmail(String email) {
 		UserEntity userEntity = userRepository.findByEmail(email)
-				.orElseThrow(() -> new UserNotFoundException("Email " + email + " Not Found"));
+				.orElseThrow(() -> new UsernameNotFoundException("Email " + email + " Not Found"));
 		
 //		UserEntity userEntity = userRepository.findByEmail(email);
 //		if (null == userEntity) {
@@ -66,7 +66,7 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public UserDTO getUserByUserId(String userId) {
 		UserEntity userEntity = userRepository.findByUserId(userId)
-				.orElseThrow(() -> new UserNotFoundException("User Id " + userId + " Not Found"));
+				.orElseThrow(() -> new UsernameNotFoundException("User Id " + userId + " Not Found"));
 
 //		UserEntity userEntity = userRepository.findByUserId(userId);
 //		if (null == userEntity) {
