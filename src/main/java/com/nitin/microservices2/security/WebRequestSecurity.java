@@ -20,7 +20,7 @@ import com.nitin.microservices2.services.UsersService;
 @Configuration
 @EnableWebSecurity
 public class WebRequestSecurity extends WebSecurityConfigurerAdapter{
-	@Value("${security.enable-csrf}")
+	//@Value("${security.enable-csrf}")
     private boolean csrfEnabled;
 	@Autowired
 	private Environment env;

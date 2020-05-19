@@ -36,7 +36,9 @@ public class UsersController {
 	public String healthCkeck() {
 		String msg = "Health is perfect\n";
 		String port = "Port number is : " + env.getProperty("local.server.port");
-		return msg+port;
+		
+		String configServerCheck = env.getProperty("token.expiration.time");
+		return msg+port + "\n config Server Check :: token.expiration.time=" + configServerCheck;
 	}
 
 
