@@ -60,17 +60,17 @@ public class UserAuthenticationFilter  extends UsernamePasswordAuthenticationFil
 		String userName = ((User) auth.getPrincipal()).getUsername();
 		
 		//Strange Exception
-		//UserDTO userDetails = usersService.getUserDetailsByEmail(userName);
-
+//		UserDTO userDetails = usersService.getUserDetailsByEmail(userName);
+//
 //		String token = Jwts.builder()
-//				//.setSubject(userDetails.getUserId())
+//				.setSubject(userDetails.getUserId())
 //				.setSubject("Local Testing")
 //				.setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(env.getProperty("token.expiration.time"))))
 //				.signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
 //				.compact();
 		String token = "Farji Token" + System.currentTimeMillis();
 		res.addHeader("token", token);
-		//res.addHeader("userId", userDetails.getUserId());
+//		res.addHeader("userId", userDetails.getUserId());
 		res.addHeader("userId", userName);		
 	}
 }

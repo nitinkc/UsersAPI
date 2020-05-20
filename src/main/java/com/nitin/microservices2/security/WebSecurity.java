@@ -19,7 +19,7 @@ import com.nitin.microservices2.services.UsersService;
 
 @Configuration
 @EnableWebSecurity
-public class WebRequestSecurity extends WebSecurityConfigurerAdapter{
+public class WebSecurity extends WebSecurityConfigurerAdapter{
 	@Value("${security.enable-csrf}")
     private boolean csrfEnabled;
 	@Autowired
@@ -52,7 +52,7 @@ public class WebRequestSecurity extends WebSecurityConfigurerAdapter{
 	
 	private UserAuthenticationFilter getAuthenticationFilter()  throws Exception{
 		UserAuthenticationFilter authenticationFilter = new UserAuthenticationFilter(authenticationManager());
-		authenticationFilter.setAuthenticationManager(authenticationManager()); 
+		//authenticationFilter.setAuthenticationManager(authenticationManager()); 
 		authenticationFilter.setFilterProcessesUrl(env.getProperty("login.url.path"));
 		return authenticationFilter;
 	}
