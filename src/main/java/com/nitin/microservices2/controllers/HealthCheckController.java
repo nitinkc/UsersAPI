@@ -1,5 +1,7 @@
 package com.nitin.microservices2.controllers;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,15 +13,15 @@ public class HealthCheckController {
 	@Autowired
 	Environment env;
 	
-	@GetMapping("/")
+	@GetMapping("/users")
 	public String healthCheck() {
 		return "Users API runs fine on port : " + env.getProperty("server.port");
 	}
 	
-	@GetMapping("/status-check")
+	@GetMapping("users/status-check")
 	public String healthCkeck() {
-		String msg = "Health is perfect\n";
-		String port = "Port number is : " + env.getProperty("token.expiration.time");
+		String msg = "Health is perfect @" + new Date(System.currentTimeMillis()) + "\n";
+		String port = "Test Config PROP is :: " + env.getProperty("test.prop");
 		return msg+port;
 	}
 }

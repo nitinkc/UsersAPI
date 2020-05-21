@@ -26,15 +26,18 @@ import com.nitin.microservices2.shared.UserDTO;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class UserAuthenticationFilter  extends UsernamePasswordAuthenticationFilter {
 
-	@Autowired
 	private UsersService usersService;
-	@Autowired
 	private Environment env;
 	
-	public UserAuthenticationFilter(AuthenticationManager authenticationManager) {
+	@Autowired
+	public UserAuthenticationFilter(UsersService usersService, Environment env, AuthenticationManager authenticationManager) {
+		this.usersService = usersService;
+		this.env = env;
 		super.setAuthenticationManager(authenticationManager);
 	}
 	
@@ -60,17 +63,15 @@ public class UserAuthenticationFilter  extends UsernamePasswordAuthenticationFil
 		String userName = ((User) auth.getPrincipal()).getUsername();
 		
 		//Strange Exception
-//		UserDTO userDetails = usersService.getUserDetailsByEmail(userName);
-//
-//		String token = Jwts.builder()
-//				.setSubject(userDetails.getUserId())
-//				.setSubject("Local Testing")
-//				.setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(env.getProperty("token.expiration.time"))))
-//				.signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
-//				.compact();
-		String token = "Farji Token" + System.currentTimeMillis();
+		UserDTO userDetails = usersService.getUserDetailsByEmail(userName);
+
+		String token = Jwts.builder()
+				.setSubject(userDetails.getUserId())
+				.setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(env.getProperty("token.expiration.time"))))
+				.signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
+				.compact();
+		res.addHeader("userId", userDetails.getUserId());
 		res.addHeader("token", token);
-//		res.addHeader("userId", userDetails.getUserId());
-		res.addHeader("userId", userName);		
+		res.addHeader("userName", userName);		
 	}
 }

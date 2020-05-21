@@ -8,7 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDTO implements Serializable {
-	private static final long serialVersionUID = -6546756;
+	//Generated SUID
+	private static final long serialVersionUID = -700372428028827140L;
 	
 	private String firstName;
 	private String lastName;

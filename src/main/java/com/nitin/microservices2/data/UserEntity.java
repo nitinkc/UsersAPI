@@ -18,8 +18,8 @@ import lombok.Setter;
 @Setter
 public class UserEntity implements Serializable {
 
-	private static final long serialVersionUID = -475684L;
-	
+	private static final long serialVersionUID = 9098253703581986923L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;

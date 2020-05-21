@@ -34,7 +34,8 @@ public class UsersController {
 
 	@PostMapping(value = "/add",
 			consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE },
-				 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+			produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+			)
 	public ResponseEntity<CreatedUserResponseModel> createUser(@Valid @RequestBody UserRegistrationModel userDetails) {
 		ModelMapper modelMapper = new ModelMapper(); 
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -42,8 +43,10 @@ public class UsersController {
 		UserDTO userDto = modelMapper.map(userDetails, UserDTO.class);
 		UserDTO createdUser = userService.createUser(userDto);
 		
+		//returning the response object, leaving behind the encrypted password
 		CreatedUserResponseModel returnValue = modelMapper.map(createdUser, CreatedUserResponseModel.class);
-		return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
+		//Returning HTTP Status code as well
+		return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);//Builder Pattern
 	}
 	
 	

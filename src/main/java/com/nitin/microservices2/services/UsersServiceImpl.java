@@ -44,7 +44,7 @@ public class UsersServiceImpl implements UsersService {
 		// JPA Repo provided method. Implementation is not required
 		userRepository.save(userEntity);
 
-		// Returning the Created object, leaving behind the password
+		// Returning the Created object, including encrypted password adn uid
 		UserDTO returnValue = modelMapper.map(userEntity, UserDTO.class);
 
 		return returnValue;
