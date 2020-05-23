@@ -40,9 +40,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 //		}
 		
 		http.csrf().disable();
+		
 		http.authorizeRequests()
-			.antMatchers(env.getProperty("ant.matchers.path"))
-			.permitAll()
+			.antMatchers(env.getProperty("api.zuul.actuator.url")).permitAll()
+			.antMatchers(env.getProperty("ant.matchers.path")).permitAll()
+			.antMatchers("/**").hasIpAddress(env.getProperty("gateway.ip"))
 			.and()
 			.addFilter(getAuthenticationFilter());
 		
