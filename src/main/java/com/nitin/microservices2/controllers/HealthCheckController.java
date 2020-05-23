@@ -25,7 +25,7 @@ public class HealthCheckController {
 		return msg+port;
 	}
 	
-	@GetMapping("/zuul-check")
+	@GetMapping("/zuul-check/")
 	public String ZuulGatewayCheck() {
 		return env.getProperty("token.secret");
 	}

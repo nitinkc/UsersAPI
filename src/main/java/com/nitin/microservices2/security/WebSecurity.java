@@ -45,6 +45,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 			.antMatchers(env.getProperty("api.zuul.actuator.url")).permitAll()
 			.antMatchers(env.getProperty("ant.matchers.path")).permitAll()
 			.antMatchers("/**").hasIpAddress(env.getProperty("gateway.ip"))
+			//.antMatchers("/**").hasIpAddress("192.168.1.68")
 			.and()
 			.addFilter(getAuthenticationFilter());
 		
