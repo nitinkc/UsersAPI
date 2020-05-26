@@ -1,22 +1,32 @@
 package com.nitin.microservices2.services;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 
 import com.nitin.microservices2.data.UserEntity;
 import com.nitin.microservices2.data.UserRepository;
 import com.nitin.microservices2.exception.UserNotFoundException;
+import com.nitin.microservices2.model.SharesPortfolioResponseModel;
+import com.nitin.microservices2.model.UserPortfolioResponseModel;
 import com.nitin.microservices2.shared.UserDTO;
+import com.nitin.microservices2.shared.UserPortfolioDTO;
 
 @Service
 public class UsersServiceImpl implements UsersService {
@@ -27,6 +37,12 @@ public class UsersServiceImpl implements UsersService {
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	@Autowired
+	RestTemplate restTemplate;
+	
+	@Autowired
+	Environment env;
+	
 	@Override
 	public UserDTO createUser(UserDTO userDetails) {
 
@@ -96,5 +112,46 @@ public class UsersServiceImpl implements UsersService {
 		// User Class ids from Spring Security
 		return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), true, true, true, true,
 				new ArrayList<>());
+	}
+
+	@Override
+	public UserDTO findByEmail(String email) {
+		UserEntity userEntity = userRepository. findByEmail(email) .orElseThrow(()
+				  -> new UsernameNotFoundException(email));//Spring provided Exception
+		
+		// userDetails.setEncryptedPassword("testing");
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		
+		// Returning the Created object, including encrypted password adn uid
+		UserDTO returnValue = modelMapper.map(userEntity, UserDTO.class);
+		
+		return returnValue;
+	}
+
+	@Override
+	public UserPortfolioDTO getUserPortfolioByEmail(String email) {
+		
+		UserEntity userEntity = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("Email " + email + " Not Found"));
+		
+		String portfolioURL = String.format(env.getProperty("portfolio.url"), email);
+		
+		ResponseEntity<List<SharesPortfolioResponseModel>> portfolioListResponse = 
+				restTemplate.exchange(portfolioURL, HttpMethod.GET, null, new ParameterizedTypeReference<List<SharesPortfolioResponseModel>>() {
+				//Nothing in the Anonymous Class	
+				});
+		
+		List<SharesPortfolioResponseModel> portfolioList = portfolioListResponse.getBody();
+		
+		// userDetails.setEncryptedPassword("testing");
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		
+		// Returning the Created object, including encrypted password adn uid
+		UserPortfolioDTO returnValue = modelMapper.map(userEntity, UserPortfolioDTO.class);
+		returnValue.setPortfolios(portfolioList);
+		
+		return returnValue;
 	}
 }
