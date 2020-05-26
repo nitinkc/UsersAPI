@@ -7,7 +7,10 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 
+import com.nitin.microservices2.data.PortfolioFeignClient;
 import com.nitin.microservices2.data.UserEntity;
 import com.nitin.microservices2.data.UserRepository;
 import com.nitin.microservices2.exception.UserNotFoundException;
@@ -27,6 +31,8 @@ import com.nitin.microservices2.model.SharesPortfolioResponseModel;
 import com.nitin.microservices2.model.UserPortfolioResponseModel;
 import com.nitin.microservices2.shared.UserDTO;
 import com.nitin.microservices2.shared.UserPortfolioDTO;
+
+import feign.FeignException;
 
 @Service
 public class UsersServiceImpl implements UsersService {
@@ -37,12 +43,18 @@ public class UsersServiceImpl implements UsersService {
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	/*
 	@Autowired
+	@LoadBalanced
 	RestTemplate restTemplate;
-	
+	*/
+	//Instead of Rest Template, using Feign Client
+	@Autowired
+	PortfolioFeignClient portfolioFeignClient;
 	@Autowired
 	Environment env;
 	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public UserDTO createUser(UserDTO userDetails) {
 
@@ -135,14 +147,26 @@ public class UsersServiceImpl implements UsersService {
 		UserEntity userEntity = userRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("Email " + email + " Not Found"));
 		
-		String portfolioURL = String.format(env.getProperty("portfolio.url"), email);
+		/*String portfolioURL = String.format(env.getProperty("portfolio.url"), email);
 		
 		ResponseEntity<List<SharesPortfolioResponseModel>> portfolioListResponse = 
 				restTemplate.exchange(portfolioURL, HttpMethod.GET, null, new ParameterizedTypeReference<List<SharesPortfolioResponseModel>>() {
 				//Nothing in the Anonymous Class	
 				});
 		
-		List<SharesPortfolioResponseModel> portfolioList = portfolioListResponse.getBody();
+		List<SharesPortfolioResponseModel> portfolioList = portfolioListResponse.getBody();*/
+		
+		//Calling via Feign Template
+//		List<SharesPortfolioResponseModel> portfolioList = null;
+//		try {
+//			portfolioList = portfolioFeignClient.getPortfolio(email);
+//		} catch (FeignException e) {
+//			logger.error(e.getLocalizedMessage());
+//		}
+		
+				
+		//Calling via Feign Template
+		List<SharesPortfolioResponseModel> portfolioList = portfolioFeignClient.getPortfolio(email);
 		
 		// userDetails.setEncryptedPassword("testing");
 		ModelMapper modelMapper = new ModelMapper();
