@@ -164,10 +164,12 @@ public class UsersServiceImpl implements UsersService {
 //			logger.error(e.getLocalizedMessage());
 //		}
 		
-				
+		
+		logger.info("Before Calling Portfolio Microservices");		
 		//Calling via Feign Template
 		List<SharesPortfolioResponseModel> portfolioList = portfolioFeignClient.getPortfolio(email);
-		
+		logger.info("After Calling Portfolio Microservices");		
+
 		// userDetails.setEncryptedPassword("testing");
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
